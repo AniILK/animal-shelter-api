@@ -22,8 +22,8 @@ public class MedicalHistoryRecord {
     @JoinColumn(name = "animal_id")
     private Animal animal;
 
-    private Timestamp recordDate;
     private String description;
     private String veterinarian;
+    private Timestamp updatedAt;
     private Timestamp createdAt;
 }
