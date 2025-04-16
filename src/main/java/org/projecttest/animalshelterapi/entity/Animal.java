@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import lombok.Setter;
 import lombok.ToString;
+import org.projecttest.animalshelterapi.enums.AnimalSpecies;
 import org.projecttest.animalshelterapi.enums.AnimalStatus;
 
 import java.sql.Timestamp;
@@ -31,7 +32,8 @@ public class Animal {
     private String name;
 
     @Column(nullable = false)
-    private String species;
+    @Enumerated(EnumType.STRING)
+    private AnimalSpecies species;
 
     private String breed;
     private int age;
