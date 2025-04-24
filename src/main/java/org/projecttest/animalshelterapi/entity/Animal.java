@@ -52,4 +52,14 @@ public class Animal {
     @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
     private List<AdoptionApplication> adoptionApplications = new ArrayList<>();
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
+
 }

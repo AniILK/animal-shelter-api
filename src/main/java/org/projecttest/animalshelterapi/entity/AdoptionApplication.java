@@ -36,4 +36,10 @@ public class AdoptionApplication {
 
     private String comment;
     private Timestamp createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
 }

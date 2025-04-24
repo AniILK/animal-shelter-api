@@ -1,12 +1,10 @@
 package org.projecttest.animalshelterapi.service;
 
 import lombok.RequiredArgsConstructor;
-import org.projecttest.animalshelterapi.entity.AdoptionApplication;
 import org.projecttest.animalshelterapi.entity.Animal;
 import org.projecttest.animalshelterapi.entity.MedicalHistoryRecord;
 import org.projecttest.animalshelterapi.enums.AnimalSpecies;
 import org.projecttest.animalshelterapi.enums.AnimalStatus;
-import org.projecttest.animalshelterapi.enums.ApplicationStatus;
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.AnimalRepository;
 import org.springframework.beans.BeanUtils;
