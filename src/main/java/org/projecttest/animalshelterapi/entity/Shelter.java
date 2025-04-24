@@ -37,4 +37,14 @@ public class Shelter {
     @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
     private List<Animal> animals = new ArrayList<>();
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
+
 }
