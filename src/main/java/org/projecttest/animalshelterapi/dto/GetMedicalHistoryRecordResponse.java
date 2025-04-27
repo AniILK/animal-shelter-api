@@ -13,6 +13,9 @@ public class GetMedicalHistoryRecordResponse {
     private Long animalId;
     private String animalName;
     private String animalSpecies;
+    private String animalBreed;
+    private String animalGender;
+    private int animalAge;
     private String description;
     private String veterinarian;
     private Timestamp updatedAt;
