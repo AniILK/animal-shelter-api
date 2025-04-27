@@ -1,6 +1,7 @@
 package org.projecttest.animalshelterapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.projecttest.animalshelterapi.dto.CreateAdoptionApplicationRequest;
 import org.projecttest.animalshelterapi.entity.AdoptionApplication;
 import org.projecttest.animalshelterapi.enums.ApplicationStatus;
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
@@ -61,4 +62,5 @@ public class AdoptionApplicationService {
 
         return adoptionApplicationRepository.save(application);
     }
+
 }
