@@ -2,6 +2,7 @@ package org.projecttest.animalshelterapi.dto;
 
 import lombok.Data;
 import org.projecttest.animalshelterapi.enums.AnimalSpecies;
+import org.projecttest.animalshelterapi.enums.AnimalStatus;
 
 @Data
 public class CreateAnimalRequest {
@@ -12,4 +13,5 @@ public class CreateAnimalRequest {
     private int age;
     private String gender;
     private String description;
+    private AnimalStatus status;
 }

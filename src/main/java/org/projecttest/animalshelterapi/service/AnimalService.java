@@ -2,99 +2,72 @@ package org.projecttest.animalshelterapi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.projecttest.animalshelterapi.entity.Animal;
-import org.projecttest.animalshelterapi.entity.MedicalHistoryRecord;
+import org.projecttest.animalshelterapi.entity.Shelter;
 import org.projecttest.animalshelterapi.enums.AnimalSpecies;
 import org.projecttest.animalshelterapi.enums.AnimalStatus;
+
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.AnimalRepository;
-import org.springframework.beans.BeanUtils;
+import org.projecttest.animalshelterapi.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
 public class AnimalService {
 
     private final AnimalRepository animalRepository;
-    private final MedicalHistoryRecordService medicalHistoryRecordService;
+    private final ShelterRepository shelterRepository;
 
-//  Create or update animal.
-    public Animal saveAnimal(Animal animal) {
+    public List<Animal> findAllAnimals() {
+        return animalRepository.findAll();
+    }
+
+    public List<Animal> findBySpecies(String species) {
+        return animalRepository.findBySpecies(AnimalSpecies.valueOf(species));
+    }
+
+    public Animal createAnimal(Animal animal, Long shelterId) {
+        Shelter shelter = shelterRepository.findById(shelterId)
+                .orElseThrow(() -> new ResourceNotFoundException(STR."Shelter with id \{shelterId} not found"));
+        animal.setShelter(shelter);
         return animalRepository.save(animal);
     }
 
-//  Get all animals, throw an exception, if none are found.
-    public List<Animal> getAllAnimals() {
-        List<Animal> animals = animalRepository.findAll();
-        if (animals.isEmpty()) {
-            throw new ResourceNotFoundException("No animals found");
-        }
-        return animals;
-    }
-
-//  Get animal by id and throw an exception if none are found
-    public Animal getAnimalById(Long animalId) {
-        return animalRepository.findById(animalId)
-                .orElseThrow(() -> new ResourceNotFoundException(STR."Animal with id \{animalId} not found"));
-    }
-
-//  Get animals by species and throw an exception, if none are found.
-    public List<Animal> getAnimalsBySpecies(AnimalSpecies species) {
-        List<Animal> animals = animalRepository.findBySpecies(species);
-        if (animals.isEmpty()) {
-            throw new ResourceNotFoundException(STR."Animal with species \{species} not found");
-        }
-        return animals;
-    }
-
-//  Update animal, throw exception, if animal doesn't exist.
-    public Animal updateAnimal(Long id, Animal updatedanimal) {
-        Animal animal = animalRepository.findById(id)
+    public Animal findAnimalById(Long id) {
+        return animalRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(STR."Animal with id \{id} not found"));
+    }
 
-        BeanUtils.copyProperties(updatedanimal, animal, "id","createdAt","updatedAt");
+    public Animal updateAnimal(Long id, Animal updatedAnimal) {
+        Animal animal = findAnimalById(id);
+        animal.setName(updatedAnimal.getName());
+        animal.setSpecies(updatedAnimal.getSpecies());
+        animal.setBreed(updatedAnimal.getBreed());
+        animal.setAge(updatedAnimal.getAge());
+        animal.setGender(updatedAnimal.getGender());
+        animal.setDescription(updatedAnimal.getDescription());
+        animal.setStatus(updatedAnimal.getStatus());
+        return animalRepository.save(animal);
+    }
+
+    public Animal partialUpdateAnimal(Long id, Animal updatedAnimal) {
+        Animal animal = findAnimalById(id);
+
+        if (updatedAnimal.getName() != null) animal.setName(updatedAnimal.getName());
+        if (updatedAnimal.getSpecies() != null) animal.setSpecies(updatedAnimal.getSpecies());
+        if (updatedAnimal.getBreed() != null) animal.setBreed(updatedAnimal.getBreed());
+        if (updatedAnimal.getAge() != 0) animal.setAge(updatedAnimal.getAge());
+        if (updatedAnimal.getGender() != null) animal.setGender(updatedAnimal.getGender());
+        if (updatedAnimal.getDescription() != null) animal.setDescription(updatedAnimal.getDescription());
+        if (updatedAnimal.getStatus() != null) animal.setStatus(updatedAnimal.getStatus());
 
         return animalRepository.save(animal);
     }
 
-//  Delete animal by id.
-    public void deleteAnimalById(Long animalId) {
-        if(!animalRepository.existsById(animalId)) {
-            throw new ResourceNotFoundException(STR."Animal with id \{animalId} not found");
-        }
-    }
-
-//  Get animal by Shelter id.
-    public List<Animal> getAnimalsByShelterId(Long shelterId) {
-        List<Animal> animals = animalRepository.findAll()
-                .stream()
-                .filter(animal -> animal.getShelter() != null && animal.getShelter().getId().equals(shelterId))
-                .toList();
-        if (animals.isEmpty()) {
-            throw new ResourceNotFoundException(STR."No animals found for shelter with id: \{shelterId}");
-        }
-        return animals;
-    }
-
-//  Gets MedHistRecords by animal id, throws exception, if animal id doesn't exist.
-    public List<MedicalHistoryRecord> getMedicalHistoryByAnimalId(Long animalId) {
-
-        // Optionally, verify the animal exists before retrieving its medical history.
-        Animal animal = animalRepository.findById(animalId)
-                .orElseThrow(() -> new ResourceNotFoundException(STR."Animal with id \{animalId} not found"));
-
-        // Delegate fetching of the records to MedicalHistoryRecordService.
-        return medicalHistoryRecordService.getRecordsByAnimalId(animal.getId());
-    }
-
-//  Update animal status(AVAILABLE,PENDING,ADOPTED), throw exception if not animal is found.
-    public Animal updateAnimalStatus(Long id, AnimalStatus newStatus) {
-        Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(STR."Adoption application with id \{id} not found"));
-        animal.setStatus(newStatus);
-
-        return animalRepository.save(animal);
+    public void deleteAnimal(Long id) {
+        Animal animal = findAnimalById(id);
+        animalRepository.delete(animal);
     }
 }

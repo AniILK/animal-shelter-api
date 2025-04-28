@@ -1,11 +1,11 @@
 package org.projecttest.animalshelterapi.service;
 
 import lombok.RequiredArgsConstructor;
-import org.projecttest.animalshelterapi.dto.CreateAdoptionApplicationRequest;
 import org.projecttest.animalshelterapi.entity.AdoptionApplication;
-import org.projecttest.animalshelterapi.enums.ApplicationStatus;
+import org.projecttest.animalshelterapi.entity.Animal;
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.AdoptionApplicationRepository;
+import org.projecttest.animalshelterapi.repository.AnimalRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,52 +15,37 @@ import java.util.List;
 public class AdoptionApplicationService {
 
     private final AdoptionApplicationRepository adoptionApplicationRepository;
+    private final AnimalRepository animalRepository;
 
-//  Create a new application.
-    public AdoptionApplication saveApplication(AdoptionApplication adoptionApplication) {
-        return adoptionApplicationRepository.save(adoptionApplication);
-    }
-//  Get all adoption applications, throw exception, if no applications exist.
-    public List<AdoptionApplication> getAllAdoptionApplications() {
-        List<AdoptionApplication> adoptionApplications = adoptionApplicationRepository.findAll();
-        if (adoptionApplications.isEmpty()) {
-            throw new ResourceNotFoundException("No adoption applications found.");
-        }
-        return adoptionApplications;
+    public List<AdoptionApplication> findAllApplications() {
+        return adoptionApplicationRepository.findAll();
     }
 
-//  Get adoption application by id, throw exception, if id doesn't exist.
-    public AdoptionApplication getAdoptionApplicationById(Long id) {
+    public AdoptionApplication createApplication(AdoptionApplication application, Long animalId) {
+        Animal animal = animalRepository.findById(animalId)
+                .orElseThrow(() -> new ResourceNotFoundException(STR."Animal with id \{animalId} not found"));
+
+        application.setAnimal(animal);
+        return adoptionApplicationRepository.save(application);
+    }
+
+    public AdoptionApplication findApplicationById(Long id) {
         return adoptionApplicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(STR."Adoption application with id \{id} not found"));
     }
 
-//  Delete adoption application by id, throw exception if it doesn't exist.
-    public void deleteAdoptionApplicationById(Long id) {
-        if (!adoptionApplicationRepository.existsById(id)) {
-            throw new ResourceNotFoundException(STR."Adoption application with id \{id} not found");
-        }
-        adoptionApplicationRepository.deleteById(id);
-    }
+    public AdoptionApplication updateApplicationStatus(Long id, AdoptionApplication updatedApplication) {
+        AdoptionApplication application = findApplicationById(id);
 
-//  Get all adoption applications for a unique animal id.
-    public List<AdoptionApplication> getAdoptionApplicationsByAnimalId(Long animalId) {
-       List<AdoptionApplication> applications = adoptionApplicationRepository.findAll()
-               .stream()
-               .filter(app -> app.getAnimal() != null && app.getAnimal().getId().equals(animalId))
-               .toList();
-       if (applications.isEmpty()) {
-           throw new ResourceNotFoundException(STR."No adoption applications found for animal id: \{animalId}");
-       }
-       return applications;
-    }
-//  Update applications status (PENDING,APPROVED,REJECTED), throw exception, if application is not found.
-    public AdoptionApplication updateApplicationStatus(Long id, ApplicationStatus newStatus) {
-        AdoptionApplication application = adoptionApplicationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(STR."Adoption application with id \{id} not found"));
-        application.setStatus(newStatus);
+        if (updatedApplication.getStatus() != null) {
+            application.setStatus(updatedApplication.getStatus());
+        }
 
         return adoptionApplicationRepository.save(application);
     }
 
+    public void deleteApplication(Long id) {
+        AdoptionApplication application = findApplicationById(id);
+        adoptionApplicationRepository.delete(application);
+    }
 }

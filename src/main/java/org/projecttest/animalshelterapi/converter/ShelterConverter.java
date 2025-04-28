@@ -3,43 +3,60 @@ package org.projecttest.animalshelterapi.converter;
 import org.projecttest.animalshelterapi.dto.CreateShelterRequest;
 import org.projecttest.animalshelterapi.dto.GetShelterResponse;
 import org.projecttest.animalshelterapi.entity.Shelter;
-import org.springframework.beans.BeanUtils;
+
+import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ShelterConverter {
 
-    // Convert from Shelter entity to GetShelterResponse DTO
-    public GetShelterResponse entityToDto(Shelter shelter) {
+    public GetShelterResponse toDto(Shelter shelter) {
         if (shelter == null) {
-            throw new IllegalArgumentException("Shelter not found");
+            throw new ResourceNotFoundException("Shelter not found");
         }
 
-        GetShelterResponse response = new GetShelterResponse();
-        BeanUtils.copyProperties(shelter, response);
-        return response;
+        GetShelterResponse dto = new GetShelterResponse();
+        dto.setId(shelter.getId());
+        dto.setName(shelter.getName());
+        dto.setAddress(shelter.getAddress());
+        dto.setCity(shelter.getCity());
+        dto.setZipCode(shelter.getZipCode());
+        dto.setPhone(shelter.getPhone());
+        dto.setEmail(shelter.getEmail());
+
+        if (shelter.getCreatedAt() != null) {
+            dto.setCreatedAt(shelter.getCreatedAt().toInstant());
+        }
+
+        if (shelter.getUpdatedAt() != null) {
+            dto.setUpdatedAt(shelter.getUpdatedAt().toInstant());
+        }
+
+        return dto;
     }
 
-    // Convert from CreateShelterRequest DTO to Shelter entity
     public Shelter toEntity(CreateShelterRequest request) {
         if (request == null) {
-            throw new IllegalArgumentException("Invalid shelter creation request");
+            throw new IllegalArgumentException("CreateShelterRequest cannot be null");
         }
 
         Shelter shelter = new Shelter();
-        BeanUtils.copyProperties(request, shelter);
+        shelter.setName(request.getName());
+        shelter.setAddress(request.getAddress());
+        shelter.setCity(request.getCity());
+        shelter.setZipCode(request.getZipCode());
+        shelter.setPhone(request.getPhone());
+        shelter.setEmail(request.getEmail());
+
         return shelter;
     }
 
-    // Convert from a list of Shelter DTOs to a list of Shelter entities
-    public List<Shelter> toEntityList(List<CreateShelterRequest> requests) {
-        List<Shelter> shelters = new ArrayList<>();
-        for (CreateShelterRequest request : requests) {
-            shelters.add(toEntity(request));
-        }
-        return shelters;
+    public List<GetShelterResponse> toDtoList(List<Shelter> shelters) {
+        return shelters.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 }

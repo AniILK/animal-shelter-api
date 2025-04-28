@@ -3,6 +3,7 @@ package org.projecttest.animalshelterapi.dto;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class GetShelterResponse {
@@ -15,4 +16,6 @@ public class GetShelterResponse {
     private String email;
     private Instant createdAt;
     private Instant updatedAt;
+
+    private List<GetAnimalResponse> animals;
 }

@@ -5,7 +5,7 @@ import org.projecttest.animalshelterapi.entity.Animal;
 
 @Data
 public class CreateAdoptionApplicationRequest {
-    private Animal animal;
+    private Long animalId;
     private String name;
     private String email;
     private String phone;
