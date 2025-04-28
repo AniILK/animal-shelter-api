@@ -1,55 +1,58 @@
 package org.projecttest.animalshelterapi.converter;
 
+import org.projecttest.animalshelterapi.dto.CreateMedicalHistoryRecordRequest;
 import org.projecttest.animalshelterapi.dto.GetMedicalHistoryRecordResponse;
 import org.projecttest.animalshelterapi.entity.MedicalHistoryRecord;
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MedicalHistoryRecordConverter {
 
-    // Convert from MedicalHistoryRecord entity to GetMedicalHistoryRecordResponse DTO
-    public GetMedicalHistoryRecordResponse entityToDto(MedicalHistoryRecord record) {
+    public GetMedicalHistoryRecordResponse toDto(MedicalHistoryRecord record) {
         if (record == null) {
-            throw new ResourceNotFoundException("Medical history record not found");
+            throw new ResourceNotFoundException("MedicalHistoryRecord not found");
         }
 
-        GetMedicalHistoryRecordResponse response = new GetMedicalHistoryRecordResponse();
-        BeanUtils.copyProperties(record, response);
+        GetMedicalHistoryRecordResponse dto = new GetMedicalHistoryRecordResponse();
+        dto.setId(record.getId());
+        dto.setAnimalId(record.getAnimal().getId());
+        dto.setAnimalName(record.getAnimal().getName());
+        dto.setAnimalSpecies(String.valueOf(record.getAnimal().getSpecies()));
+        dto.setAnimalBreed(record.getAnimal().getBreed());
+        dto.setDescription(record.getDescription());
+        dto.setVeterinarian(record.getVeterinarian());
 
-        if (record.getAnimal() != null) {
-            response.setAnimalId(record.getAnimal().getId());
-            response.setAnimalName(record.getAnimal().getName());
-            response.setAnimalSpecies(record.getAnimal().getSpecies().toString());
-            response.setAnimalBreed(record.getAnimal().getBreed());
-            response.setAnimalGender(record.getAnimal().getGender());
-            response.setAnimalAge(record.getAnimal().getAge());
+        if (record.getCreatedAt() != null) {
+            dto.setCreatedAt(Timestamp.from(record.getCreatedAt().toInstant()));
         }
 
-        return response;
+        if (record.getUpdatedAt() != null) {
+            dto.setUpdatedAt(Timestamp.from(record.getUpdatedAt().toInstant()));
+        }
+
+        return dto;
     }
 
-    // Convert from MedicalHistoryRecord DTO to entity
-    public MedicalHistoryRecord toEntity(MedicalHistoryRecord request) {
+    public MedicalHistoryRecord toEntity(CreateMedicalHistoryRecordRequest request) {
         if (request == null) {
-            throw new ResourceNotFoundException("Medical history record not found");
+            throw new IllegalArgumentException("CreateMedicalHistoryRecordRequest cannot be null");
         }
 
         MedicalHistoryRecord record = new MedicalHistoryRecord();
-        BeanUtils.copyProperties(request, record);
+        record.setDescription(request.getDescription());
+        record.setVeterinarian(request.getVeterinarian());
+
         return record;
     }
 
-    // Convert from a list of MedicalHistoryRecord entities to a list of GetMedicalHistoryRecordResponse DTOs
-    public List<GetMedicalHistoryRecordResponse> entityListToDto(List<MedicalHistoryRecord> records) {
-        List<GetMedicalHistoryRecordResponse> responseList = new ArrayList<>();
-        for (MedicalHistoryRecord record : records) {
-            responseList.add(entityToDto(record));
-        }
-        return responseList;
+    public List<GetMedicalHistoryRecordResponse> toDtoList(List<MedicalHistoryRecord> records) {
+        return records.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 }

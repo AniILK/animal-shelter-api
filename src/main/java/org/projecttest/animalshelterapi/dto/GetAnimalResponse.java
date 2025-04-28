@@ -6,11 +6,12 @@ import org.projecttest.animalshelterapi.enums.AnimalSpecies;
 import org.projecttest.animalshelterapi.enums.AnimalStatus;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class GetAnimalResponse {
     private Long id;
-    private Shelter shelter;
+    private Long shelterId;
     private String name;
     private AnimalSpecies species;
     private String breed;
@@ -20,4 +21,8 @@ public class GetAnimalResponse {
     private AnimalStatus status;
     private Instant createdAt;
     private Instant updatedAt;
+
+    private List<GetMedicalHistoryRecordResponse> medicalHistoryRecords;
+    private List<GetAdoptionApplicationResponse> adoptionApplications;
+
 }

@@ -2,9 +2,9 @@ package org.projecttest.animalshelterapi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.projecttest.animalshelterapi.entity.Shelter;
+
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.ShelterRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,41 +15,45 @@ public class ShelterService {
 
     private final ShelterRepository shelterRepository;
 
-//  Create and update shelter
-    public Shelter saveShelter(Shelter shelter) {
+    public List<Shelter> findAllShelters() {
+        return shelterRepository.findAll();
+    }
+
+    public Shelter createShelter(Shelter shelter) {
         return shelterRepository.save(shelter);
     }
 
-//  Retrieve all shelters and throw an exception if none are found
-    public List<Shelter> getAllShelters() {
-        List<Shelter> shelters = shelterRepository.findAll();
-        if (shelters.isEmpty()) {
-            throw new ResourceNotFoundException("No shelters found");
-        }
-        return shelters;
-    }
-
-//  Gets shelter by its id, throws exception, if the shelter doesn't exist.
-    public Shelter getShelterById(Long id) {
+    public Shelter findShelterById(Long id) {
         return shelterRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(STR."Shelter with id \{id} not found"));
     }
 
-//  Update an existing shelter and throws exception if shelter with provided id doesn't exist.
     public Shelter updateShelter(Long id, Shelter updatedShelter) {
-        Shelter shelter = shelterRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(STR."Shelter with id \{id} not found"));
+        Shelter shelter = findShelterById(id);
+        shelter.setName(updatedShelter.getName());
+        shelter.setAddress(updatedShelter.getAddress());
+        shelter.setCity(updatedShelter.getCity());
+        shelter.setZipCode(updatedShelter.getZipCode());
+        shelter.setPhone(updatedShelter.getPhone());
+        shelter.setEmail(updatedShelter.getEmail());
+        return shelterRepository.save(shelter);
+    }
 
-        BeanUtils.copyProperties(updatedShelter, shelter, "id", "createdAt", "updatedAt");
+    public Shelter partialUpdateShelter(Long id, Shelter updatedShelter) {
+        Shelter shelter = findShelterById(id);
+
+        if (updatedShelter.getName() != null) shelter.setName(updatedShelter.getName());
+        if (updatedShelter.getAddress() != null) shelter.setAddress(updatedShelter.getAddress());
+        if (updatedShelter.getCity() != null) shelter.setCity(updatedShelter.getCity());
+        if (updatedShelter.getZipCode() != null) shelter.setZipCode(updatedShelter.getZipCode());
+        if (updatedShelter.getPhone() != null) shelter.setPhone(updatedShelter.getPhone());
+        if (updatedShelter.getEmail() != null) shelter.setEmail(updatedShelter.getEmail());
 
         return shelterRepository.save(shelter);
     }
 
-//  Delete shelter by its id, throws exception, if shelter doesn't exist.
     public void deleteShelter(Long id) {
-        if (!shelterRepository.existsById(id)) {
-            throw new ResourceNotFoundException(STR."Shelter with id \{id} not found");
-        }
-        shelterRepository.deleteById(id);
+        Shelter shelter = findShelterById(id);
+        shelterRepository.delete(shelter);
     }
 }

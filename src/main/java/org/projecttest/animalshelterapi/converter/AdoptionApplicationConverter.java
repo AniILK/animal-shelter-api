@@ -1,49 +1,62 @@
 package org.projecttest.animalshelterapi.converter;
 
-import lombok.RequiredArgsConstructor;
 import org.projecttest.animalshelterapi.dto.CreateAdoptionApplicationRequest;
 import org.projecttest.animalshelterapi.dto.GetAdoptionApplicationResponse;
 import org.projecttest.animalshelterapi.entity.AdoptionApplication;
+import org.projecttest.animalshelterapi.enums.ApplicationStatus;
 
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class AdoptionApplicationConverter {
 
-    // Convert from AdoptionApplication entity to GetAdoptionApplicationResponse DTO
-    public GetAdoptionApplicationResponse entityToDto(AdoptionApplication application) {
+    public GetAdoptionApplicationResponse toDto(AdoptionApplication application) {
         if (application == null) {
-            throw new ResourceNotFoundException("Adoption application not found");
+            throw new ResourceNotFoundException("AdoptionApplication not found");
         }
 
-        GetAdoptionApplicationResponse response = new GetAdoptionApplicationResponse();
-        BeanUtils.copyProperties(application, response);
+        GetAdoptionApplicationResponse dto = new GetAdoptionApplicationResponse();
+        dto.setId(application.getId());
+        dto.setAnimalId(application.getAnimal().getId());
+        dto.setName(application.getName());
+        dto.setEmail(application.getEmail());
+        dto.setPhone(application.getPhone());
+        dto.setComment(application.getComment());
+        dto.setStatus(application.getStatus());
+        dto.setCreatedAt(application.getCreatedAt().toInstant());
 
-        // Set the animalId
-        if (application.getAnimal() != null) {
-            response.setAnimalId(application.getAnimal().getId());
-        }
-
-        return response;
+        return dto;
     }
 
-    // Convert from CreateAdoptionApplicationRequest DTO to AdoptionApplication entity
     public AdoptionApplication toEntity(CreateAdoptionApplicationRequest request) {
         if (request == null) {
-            throw new IllegalArgumentException("Invalid adoption application request");
+            throw new IllegalArgumentException("CreateAdoptionApplicationRequest cannot be null");
         }
 
         AdoptionApplication application = new AdoptionApplication();
-        BeanUtils.copyProperties(request, application);
-
-        if (request.getAnimal() == null) {
-            throw new ResourceNotFoundException("No animal provided in the adoption application request");
-        }
-
-        application.setAnimal(request.getAnimal());
+        application.setName(request.getName());
+        application.setEmail(request.getEmail());
+        application.setPhone(request.getPhone());
+        application.setComment(request.getComment());
+        application.setStatus(ApplicationStatus.PENDING);
 
         return application;
+    }
+
+    public List<GetAdoptionApplicationResponse> toDtoList(List<AdoptionApplication> applications) {
+        return applications.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public void updateApplicationStatus(AdoptionApplication application, ApplicationStatus newStatus) {
+        if (application == null) {
+            throw new ResourceNotFoundException("AdoptionApplication not found");
+        }
+        application.setStatus(newStatus);
     }
 }
