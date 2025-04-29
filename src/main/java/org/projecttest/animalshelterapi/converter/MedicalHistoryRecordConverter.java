@@ -24,6 +24,7 @@ public class MedicalHistoryRecordConverter {
         dto.setAnimalName(record.getAnimal().getName());
         dto.setAnimalSpecies(String.valueOf(record.getAnimal().getSpecies()));
         dto.setAnimalBreed(record.getAnimal().getBreed());
+        dto.setAnimalAge(record.getAnimal().getAge());
         dto.setDescription(record.getDescription());
         dto.setVeterinarian(record.getVeterinarian());
 

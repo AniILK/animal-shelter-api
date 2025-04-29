@@ -21,8 +21,4 @@ public class GetAnimalResponse {
     private AnimalStatus status;
     private Instant createdAt;
     private Instant updatedAt;
-
-    private List<GetMedicalHistoryRecordResponse> medicalHistoryRecords;
-    private List<GetAdoptionApplicationResponse> adoptionApplications;
-
 }
