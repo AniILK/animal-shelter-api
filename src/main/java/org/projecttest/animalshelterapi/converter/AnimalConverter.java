@@ -57,12 +57,6 @@ public class AnimalConverter {
         return animal;
     }
 
-    public List<GetAnimalResponse> toDtoList(List<Animal> animals) {
-        return animals.stream()
-                .map(this::entityToDto)
-                .collect(Collectors.toList());
-    }
-
     public void updateAnimalStatus(Animal animal, AnimalStatus newStatus) {
         if (animal == null) {
             throw new ResourceNotFoundException("Animal not found");

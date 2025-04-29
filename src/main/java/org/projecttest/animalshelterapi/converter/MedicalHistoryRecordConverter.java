@@ -49,10 +49,4 @@ public class MedicalHistoryRecordConverter {
 
         return record;
     }
-
-    public List<GetMedicalHistoryRecordResponse> toDtoList(List<MedicalHistoryRecord> records) {
-        return records.stream()
-                .map(this::entityToDto)
-                .collect(Collectors.toList());
-    }
 }
