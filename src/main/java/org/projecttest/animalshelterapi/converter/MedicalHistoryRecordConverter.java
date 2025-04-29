@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class MedicalHistoryRecordConverter {
 
-    public GetMedicalHistoryRecordResponse toDto(MedicalHistoryRecord record) {
+    public GetMedicalHistoryRecordResponse entityToDto(MedicalHistoryRecord record) {
         if (record == null) {
             throw new ResourceNotFoundException("MedicalHistoryRecord not found");
         }
@@ -38,7 +38,7 @@ public class MedicalHistoryRecordConverter {
         return dto;
     }
 
-    public MedicalHistoryRecord toEntity(CreateMedicalHistoryRecordRequest request) {
+    public MedicalHistoryRecord dtoToEntity(CreateMedicalHistoryRecordRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("CreateMedicalHistoryRecordRequest cannot be null");
         }
@@ -52,7 +52,7 @@ public class MedicalHistoryRecordConverter {
 
     public List<GetMedicalHistoryRecordResponse> toDtoList(List<MedicalHistoryRecord> records) {
         return records.stream()
-                .map(this::toDto)
+                .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
 }

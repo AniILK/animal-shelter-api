@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class ShelterConverter {
 
-    public GetShelterResponse toDto(Shelter shelter) {
+    public GetShelterResponse entityToDto(Shelter shelter) {
         if (shelter == null) {
             throw new ResourceNotFoundException("Shelter not found");
         }
@@ -38,7 +38,7 @@ public class ShelterConverter {
         return dto;
     }
 
-    public Shelter toEntity(CreateShelterRequest request) {
+    public Shelter dtoToEntity(CreateShelterRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("CreateShelterRequest cannot be null");
         }
@@ -56,7 +56,7 @@ public class ShelterConverter {
 
     public List<GetShelterResponse> toDtoList(List<Shelter> shelters) {
         return shelters.stream()
-                .map(this::toDto)
+                .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
 }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Component
 public class AdoptionApplicationConverter {
 
-    public GetAdoptionApplicationResponse toDto(AdoptionApplication application) {
+    public GetAdoptionApplicationResponse entityToDto(AdoptionApplication application) {
         if (application == null) {
             throw new ResourceNotFoundException("AdoptionApplication not found");
         }
@@ -32,7 +32,7 @@ public class AdoptionApplicationConverter {
         return dto;
     }
 
-    public AdoptionApplication toEntity(CreateAdoptionApplicationRequest request) {
+    public AdoptionApplication dtoToEntity(CreateAdoptionApplicationRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("CreateAdoptionApplicationRequest cannot be null");
         }
@@ -49,7 +49,7 @@ public class AdoptionApplicationConverter {
 
     public List<GetAdoptionApplicationResponse> toDtoList(List<AdoptionApplication> applications) {
         return applications.stream()
-                .map(this::toDto)
+                .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
 

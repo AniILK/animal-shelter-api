@@ -6,9 +6,9 @@ import org.projecttest.animalshelterapi.entity.Animal;
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.AdoptionApplicationRepository;
 import org.projecttest.animalshelterapi.repository.AnimalRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +17,8 @@ public class AdoptionApplicationService {
     private final AdoptionApplicationRepository adoptionApplicationRepository;
     private final AnimalRepository animalRepository;
 
-    public List<AdoptionApplication> findAllApplications() {
-        return adoptionApplicationRepository.findAll();
+    public Page<AdoptionApplication> findAllApplications(Pageable pageable) {
+        return adoptionApplicationRepository.findAll(pageable);
     }
 
     public AdoptionApplication createApplication(AdoptionApplication application, Long animalId) {

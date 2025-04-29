@@ -6,9 +6,9 @@ import org.projecttest.animalshelterapi.dto.CreateAnimalRequest;
 import org.projecttest.animalshelterapi.dto.GetAnimalResponse;
 import org.projecttest.animalshelterapi.entity.Animal;
 import org.projecttest.animalshelterapi.service.AnimalService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/animals")
@@ -19,34 +19,39 @@ public class AnimalController {
     private final AnimalConverter converter;
 
     @GetMapping
-    public List<GetAnimalResponse> getAnimalList(@RequestParam(required = false) String species) {
+    public Page<GetAnimalResponse> getAnimals(
+            @RequestParam(required = false) String species,
+            Pageable pageable
+    ) {
         if (species != null) {
-            return converter.toDtoList(animalService.findBySpecies(species));
+            return animalService.findBySpecies(species, pageable)
+                    .map(converter::entityToDto);
         }
-        return converter.toDtoList(animalService.findAllAnimals());
+        return animalService.findAllAnimals(pageable)
+                .map(converter::entityToDto);
     }
 
     @PostMapping
     public GetAnimalResponse createAnimal(@RequestBody CreateAnimalRequest request) {
-        Animal animal = converter.toEntity(request);
-        return converter.toDto(animalService.createAnimal(animal, request.getShelterId()));
+        Animal animal = converter.dtoToEntity(request);
+        return converter.entityToDto(animalService.createAnimal(animal, request.getShelterId()));
     }
 
     @GetMapping("/{id}")
     public GetAnimalResponse getAnimalById(@PathVariable Long id) {
-        return converter.toDto(animalService.findAnimalById(id));
+        return converter.entityToDto(animalService.findAnimalById(id));
     }
 
     @PutMapping("/{id}")
     public GetAnimalResponse putAnimalById(@PathVariable Long id, @RequestBody CreateAnimalRequest request) {
-        Animal animal = converter.toEntity(request);
-        return converter.toDto(animalService.updateAnimal(id, animal));
+        Animal animal = converter.dtoToEntity(request);
+        return converter.entityToDto(animalService.updateAnimal(id, animal));
     }
 
     @PatchMapping("/{id}")
     public GetAnimalResponse patchAnimalById(@PathVariable Long id, @RequestBody CreateAnimalRequest request) {
-        Animal animal = converter.toEntity(request);
-        return converter.toDto(animalService.partialUpdateAnimal(id, animal));
+        Animal animal = converter.dtoToEntity(request);
+        return converter.entityToDto(animalService.partialUpdateAnimal(id, animal));
     }
 
     @DeleteMapping("/{id}")
