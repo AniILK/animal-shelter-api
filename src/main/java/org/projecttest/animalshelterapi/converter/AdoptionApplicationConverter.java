@@ -47,12 +47,6 @@ public class AdoptionApplicationConverter {
         return application;
     }
 
-    public List<GetAdoptionApplicationResponse> toDtoList(List<AdoptionApplication> applications) {
-        return applications.stream()
-                .map(this::entityToDto)
-                .collect(Collectors.toList());
-    }
-
     public void updateApplicationStatus(AdoptionApplication application, ApplicationStatus newStatus) {
         if (application == null) {
             throw new ResourceNotFoundException("AdoptionApplication not found");

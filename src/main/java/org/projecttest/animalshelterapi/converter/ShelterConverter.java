@@ -53,10 +53,4 @@ public class ShelterConverter {
 
         return shelter;
     }
-
-    public List<GetShelterResponse> toDtoList(List<Shelter> shelters) {
-        return shelters.stream()
-                .map(this::entityToDto)
-                .collect(Collectors.toList());
-    }
 }
