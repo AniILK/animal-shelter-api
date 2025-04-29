@@ -1,13 +1,14 @@
 package org.projecttest.animalshelterapi.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.projecttest.animalshelterapi.entity.Shelter;
 
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.ShelterRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,8 +16,8 @@ public class ShelterService {
 
     private final ShelterRepository shelterRepository;
 
-    public List<Shelter> findAllShelters() {
-        return shelterRepository.findAll();
+    public Page<Shelter> findAllShelters(Pageable pageable) {
+        return shelterRepository.findAll(pageable);
     }
 
     public Shelter createShelter(Shelter shelter) {

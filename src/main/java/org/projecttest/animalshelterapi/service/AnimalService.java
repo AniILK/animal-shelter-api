@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.projecttest.animalshelterapi.entity.Animal;
 import org.projecttest.animalshelterapi.entity.Shelter;
 import org.projecttest.animalshelterapi.enums.AnimalSpecies;
-import org.projecttest.animalshelterapi.enums.AnimalStatus;
 
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.AnimalRepository;
 import org.projecttest.animalshelterapi.repository.ShelterRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +21,12 @@ public class AnimalService {
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
 
-    public List<Animal> findAllAnimals() {
-        return animalRepository.findAll();
+    public Page<Animal> findAllAnimals(Pageable pageable) {
+        return animalRepository.findAll(pageable);
     }
 
-    public List<Animal> findBySpecies(String species) {
-        return animalRepository.findBySpecies(AnimalSpecies.valueOf(species));
+    public Page<Animal> findBySpecies(String species, Pageable pageable) {
+        return animalRepository.findBySpecies(species, pageable);
     }
 
     public Animal createAnimal(Animal animal, Long shelterId) {
@@ -65,6 +66,8 @@ public class AnimalService {
 
         return animalRepository.save(animal);
     }
+
+
 
     public void deleteAnimal(Long id) {
         Animal animal = findAnimalById(id);

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class AnimalConverter {
 
-    public GetAnimalResponse toDto(Animal animal) {
+    public GetAnimalResponse entityToDto(Animal animal) {
         if (animal == null) {
             throw new ResourceNotFoundException("Animal not found");
         }
@@ -40,7 +40,7 @@ public class AnimalConverter {
         return dto;
     }
 
-    public Animal toEntity(CreateAnimalRequest request) {
+    public Animal dtoToEntity(CreateAnimalRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("CreateAnimalRequest cannot be null");
         }
@@ -59,7 +59,7 @@ public class AnimalConverter {
 
     public List<GetAnimalResponse> toDtoList(List<Animal> animals) {
         return animals.stream()
-                .map(this::toDto)
+                .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
 

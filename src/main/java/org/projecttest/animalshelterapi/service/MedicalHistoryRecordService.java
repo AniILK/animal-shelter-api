@@ -7,9 +7,9 @@ import org.projecttest.animalshelterapi.entity.MedicalHistoryRecord;
 import org.projecttest.animalshelterapi.exceptions.ResourceNotFoundException;
 import org.projecttest.animalshelterapi.repository.AnimalRepository;
 import org.projecttest.animalshelterapi.repository.MedicalHistoryRecordRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +18,8 @@ public class MedicalHistoryRecordService {
     private final MedicalHistoryRecordRepository medicalHistoryRecordRepository;
     private final AnimalRepository animalRepository;
 
-    public List<MedicalHistoryRecord> findAllRecords() {
-        return medicalHistoryRecordRepository.findAll();
+    public Page<MedicalHistoryRecord> findAllRecords(Pageable pageable) {
+        return medicalHistoryRecordRepository.findAll(pageable);
     }
 
     public MedicalHistoryRecord createMedicalHistoryRecord(MedicalHistoryRecord record, Long animalId) {
