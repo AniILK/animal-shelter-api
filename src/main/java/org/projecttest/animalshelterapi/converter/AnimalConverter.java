@@ -56,11 +56,4 @@ public class AnimalConverter {
 
         return animal;
     }
-
-    public void updateAnimalStatus(Animal animal, AnimalStatus newStatus) {
-        if (animal == null) {
-            throw new ResourceNotFoundException("Animal not found");
-        }
-        animal.setStatus(newStatus);
-    }
 }

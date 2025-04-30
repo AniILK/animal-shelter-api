@@ -1,8 +1,6 @@
 package org.projecttest.animalshelterapi.dto;
 
-import jakarta.persistence.*;
 import lombok.Data;
-import org.projecttest.animalshelterapi.entity.Animal;
 
 import java.sql.Timestamp;
 

@@ -34,7 +34,7 @@ public class Shelter {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "shelter", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Animal> animals = new ArrayList<>();
 
     @PrePersist

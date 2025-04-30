@@ -1,7 +1,6 @@
 package org.projecttest.animalshelterapi.dto;
 
 import lombok.Data;
-import org.projecttest.animalshelterapi.entity.Animal;
 
 @Data
 public class CreateAdoptionApplicationRequest {

@@ -1,12 +1,10 @@
 package org.projecttest.animalshelterapi.dto;
 
 import lombok.Data;
-import org.projecttest.animalshelterapi.entity.Shelter;
 import org.projecttest.animalshelterapi.enums.AnimalSpecies;
 import org.projecttest.animalshelterapi.enums.AnimalStatus;
 
 import java.time.Instant;
-import java.util.List;
 
 @Data
 public class GetAnimalResponse {

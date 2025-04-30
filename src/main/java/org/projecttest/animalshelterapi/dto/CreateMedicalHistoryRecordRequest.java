@@ -2,7 +2,6 @@ package org.projecttest.animalshelterapi.dto;
 
 import lombok.Data;
 
-
 @Data
 public class CreateMedicalHistoryRecordRequest {
     private Long animalId;

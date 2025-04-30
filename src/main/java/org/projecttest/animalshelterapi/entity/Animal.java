@@ -46,10 +46,10 @@ public class Animal {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "animal",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<MedicalHistoryRecord> medicalHistoryRecords = new ArrayList<>();
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "animal",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<AdoptionApplication> adoptionApplications = new ArrayList<>();
 
     @PrePersist
