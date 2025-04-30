@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface MedicalHistoryRecordRepository extends JpaRepository<MedicalHistoryRecord, Long> {
-//  Get MedHistRecords using animal id.
-    List<MedicalHistoryRecord> findByAnimalId(Long animalId);
 }

@@ -2,6 +2,7 @@ package org.projecttest.animalshelterapi.controllers;
 
 import lombok.RequiredArgsConstructor;
 
+import org.projecttest.animalshelterapi.converter.AnimalConverter;
 import org.projecttest.animalshelterapi.converter.ShelterConverter;
 import org.projecttest.animalshelterapi.dto.CreateShelterRequest;
 import org.projecttest.animalshelterapi.dto.GetShelterResponse;

@@ -1,6 +1,8 @@
 package org.projecttest.animalshelterapi.converter;
 
+import lombok.RequiredArgsConstructor;
 import org.projecttest.animalshelterapi.dto.CreateShelterRequest;
+import org.projecttest.animalshelterapi.dto.GetAnimalResponse;
 import org.projecttest.animalshelterapi.dto.GetShelterResponse;
 import org.projecttest.animalshelterapi.entity.Shelter;
 
@@ -11,7 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class ShelterConverter {
+
+    private final AnimalConverter animalConverter;
 
     public GetShelterResponse entityToDto(Shelter shelter) {
         if (shelter == null) {
@@ -33,6 +38,13 @@ public class ShelterConverter {
 
         if (shelter.getUpdatedAt() != null) {
             dto.setUpdatedAt(shelter.getUpdatedAt().toInstant());
+        }
+
+        if (shelter.getAnimals() != null) {
+            List<GetAnimalResponse> animals = shelter.getAnimals().stream()
+                    .map(animalConverter::entityToDto)
+                    .collect(Collectors.toList());
+            dto.setAnimals(animals);
         }
 
         return dto;
